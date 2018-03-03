@@ -13,28 +13,35 @@ import java.util.Random;
 
 public class RockPaperScissors {
 	
-	private static String findWinner(String user, String computer) {
-		//Finds the winner
-		if(user.equals(computer)) {
-			return "Tie!";
-		} else if(user.equals("rock") && computer.equals("scissors")) {
-			return "You won!";
-		} else if(user.equals("paper") && computer.equals("rock")) {
-			return "You won!";
-		} else if(user.equals("scissors") && computer.equals("paper")) {
-			return "You won!";
-		} else {
-			return "You lost.";
+	private enum Choices {
+		
+		ROCK,
+		PAPER,
+		SCISSORS;
+		
+		private static String findWinner(Choices user, Choices computer) {
+			//Finds the winner
+			if(user==computer) {
+				return "Tie!";
+			} else if(user==ROCK && computer==SCISSORS) {
+				return "You won!";
+			} else if(user==PAPER && computer==ROCK) {
+				return "You won!";
+			} else if(user==SCISSORS && computer==PAPER) {
+				return "You won!";
+			} else {
+				return "You lost.";
+			}
 		}
 	}
 	
-	public static void main(String[] args0 ) {
+	public static void main(String[] args) {
 		//Gets the user's choice and determines who has won
 		
-		String[] choiceIndex = {"rock", "paper", "scissors"};
 		String userInput = "";
 		BufferedReader reader = new BufferedReader(new InputStreamReader
 				(System.in));
+		Choices userChoice;
 		
 		//Get the user's choice
 		while(true) {
@@ -46,29 +53,21 @@ public class RockPaperScissors {
 			} catch (IOException noInput) {
 				noInput.printStackTrace();
 			}
-			//check if input is in choiceIndex
-			userInput = userInput.toLowerCase();
-			boolean validChoice = false;
-			for(String item: choiceIndex) {
-				if(item.equals(userInput)) {
-					validChoice = true;
-					break;
-				}
-			}
-			if(!validChoice) {
+			try {
+				userChoice = Choices.valueOf(userInput.toUpperCase());
+				break;
+			} catch (IllegalArgumentException nonValidOption) {
 				System.out.println("Please choose \"rock,\" \"paper,\" or"
 						+ " \"scissors\"");
-			} else {
-				break;
 			}
 		}
 		
 		//Generate computer's choice
 		Random rand = new Random();
-		String computerChoice = choiceIndex[rand.nextInt(3)];
+		Choices computerChoice = Choices.values()[rand.nextInt(3)];
 		
 		//Print results
-		System.out.println("Computer: "+computerChoice+"\nUser: "+userInput);
-		System.out.println(findWinner(userInput, computerChoice));
+		System.out.println("Computer: "+computerChoice+"\nUser: "+userChoice);
+		System.out.println(Choices.findWinner(userChoice, computerChoice));
 	}
 }
